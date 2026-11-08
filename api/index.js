@@ -15,7 +15,7 @@ const BAZAAR = {
 function getPaymentRequirements() {
   return {
     scheme: "exact",
-    network: "base",
+    network: "eip155:8453",
     amount: "10000",
     maxAmountRequired: "10000",
     asset: USDC_BASE,
@@ -24,7 +24,7 @@ function getPaymentRequirements() {
     description: "Random motivational quote - $0.01 per call",
     mimeType: "application/json",
     maxTimeoutSeconds: 60,
-    // EIP-712 domain - HARUS persis format ini, jangan di-nest lagi
+    outputSchema: { type: "object", properties: { quote: { type: "string" } } },
     extra: {
       name: "USD Coin",
       version: "2",
@@ -41,7 +41,7 @@ function getPaymentRequirements() {
 function get402Response(res) {
   const accepts = [getPaymentRequirements()];
   const payload = {
-    x402Version: 1,
+    x402Version: 2,
     error: "Payment required",
     accepts,
     extensions: {
@@ -51,7 +51,7 @@ function get402Response(res) {
   };
   const paymentRequired = Buffer.from(JSON.stringify(payload)).toString("base64");
   res.setHeader("Access-Control-Allow-Origin", "*");
-  // Header ini yang dibaca vAPI buat "extensions advertised"
+  res.setHeader("Access-Control-Expose-Headers", "PAYMENT-REQUIRED, X-402-Extensions");
   res.setHeader("PAYMENT-REQUIRED", paymentRequired);
   res.setHeader("X-402-Extensions", "bazaar");
   res.setHeader("X-PAYMENT-REQUIRED", paymentRequired);
@@ -81,11 +81,12 @@ export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-PAYMENT, PAYMENT-SIGNATURE");
+  res.setHeader("Access-Control-Expose-Headers", "PAYMENT-REQUIRED, X-402-Extensions");
   if (req.method === "OPTIONS") return res.status(200).end();
   const url = req.url || "";
   if (url.includes("/.well-known/x402") || url.includes("well-known")) {
     return res.status(200).json({
-      x402Version: 1,
+      x402Version: 2,
       resources: [getPaymentRequirements()],
       extensions: { bazaar: BAZAAR },
     });
