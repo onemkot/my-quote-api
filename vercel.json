@@ -1,3 +1,8 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/api/index.js" }]
+  "rewrites": [
+    { "source": "/.well-known/x402", "destination": "/api/index.js" },
+    { "source": "/openapi.json", "destination": "/api/index.js" },
+    { "source": "/api/quote", "destination": "/api/index.js" },
+    { "source": "/api/:path*", "destination": "/api/index.js" }
+  ]
 }
