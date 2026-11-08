@@ -1,5 +1,5 @@
 const WALLET = "0x8e50acddb305b623ffea515cb4dd4909f21cff1d";
-const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+const USDC_BASE = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
 const RESOURCE = "https://my-quote-api-gghx.vercel.app/api/quote";
 
 function getPaymentRequirements() {
