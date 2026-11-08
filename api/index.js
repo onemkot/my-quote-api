@@ -43,6 +43,7 @@ function get402Response(res) {
   const payload = {
     x402Version: 2,
     error: "Payment required",
+    resource: RESOURCE,
     accepts,
     extensions: {
       bazaar: BAZAAR,
@@ -87,6 +88,7 @@ export default function handler(req, res) {
   if (url.includes("/.well-known/x402") || url.includes("well-known")) {
     return res.status(200).json({
       x402Version: 2,
+      resource: RESOURCE,
       resources: [getPaymentRequirements()],
       extensions: { bazaar: BAZAAR },
     });
